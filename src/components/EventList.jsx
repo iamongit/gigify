@@ -12,6 +12,8 @@ class EventList extends Component {
       selected: {},
       displayWarning: false,
       currentVenue: '',
+      currentdate:'',
+      currentevent:'',
     };
     this.toggleEvent = this.toggleEvent.bind(this);
     this.generatePlaylist = this.generatePlaylist.bind(this);
@@ -20,13 +22,12 @@ class EventList extends Component {
 
   toggleEvent(performers, id) {
     const selected = this.state.selected;
-
     if (selected[id]) {
       delete selected[id];
       this.setState({
         selected,
       });
-      [...new Set([].concat(...(Object.values(this.state.selected))))].length <= 5 ? this.setState({ displayWarning: false }) : console.log('OK');
+      [...new Set([].concat(...(Object.values(this.state.selected))))].length <= 23 ? this.setState({ displayWarning: false }) : console.log('OK');
       console.log('AFTER DELETE', [...new Set([].concat(...(Object.values(this.state.selected))))]);
       return;
     }
@@ -37,7 +38,7 @@ class EventList extends Component {
     console.log('ADDED TO STATE', [...new Set([].concat(...(Object.values(this.state.selected))))]);
     const unique = [...new Set([].concat(...(Object.values(this.state.selected))))];
 
-    if (unique.length > 5) {
+    if (unique.length > 23) {
       console.log('WARNING TRIGGERED HERE', [...new Set([].concat(...(Object.values(this.state.selected))))]);
       this.setState({
         displayWarning: true,
@@ -69,13 +70,18 @@ class EventList extends Component {
 
   getVenue(value, callback) {
     this.setState({
-      currentVenue: value
-    }, function(state) {  //{currentVenue: props}
-      console.log('inside getVenue-- currentVenue is: ', this.state.currentVenue)
+      currentVenue: value.venue,
+      currentdate: value.date,
+      currentevent: value.eventname,
+    }, function () {  //{currentVenue: props}
+      console.log('inside getVenue-- currentVenue is: ',
+      this.state.currentVenue,
+      this.state.currentdate,
+      this.state.currentevent
+    )
       callback();
       // return { currentVenue:value }
     });
-      console.log(this.state.currentVenue, "GET VALUEEE")
   }
 
   componentDidMount() {
@@ -90,7 +96,6 @@ class EventList extends Component {
 
   render() {
     const selectedPerformers = [...new Set([].concat(...(Object.values(this.state.selected))))];
-
     return (
       <div id="event-page" className="event-page-container">
         <div className="col-sm-2 event-list-sidebar">
@@ -120,6 +125,8 @@ class EventList extends Component {
                 locked={this.state.displayWarning}
                 getVenue={this.getVenue}
                 currentVenue={this.state.currentVenue}
+                currentdate={this.state.currentdate}
+                currentevent={this.state.currentevent}
 
               />,
         )}
